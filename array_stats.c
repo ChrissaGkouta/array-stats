@@ -118,9 +118,9 @@ int main(int argc, char *argv[]) {
         array_stats.info_array_1 == serial_stats.info_array_1 &&
         array_stats.info_array_2 == serial_stats.info_array_2 &&
         array_stats.info_array_3 == serial_stats.info_array_3) {
-        printf("Verification: SUCCESS (Results match)\n");
+        printf("Verification: SUCCESS \n");
     } else {
-        printf("Verification: FAILURE (Results do not match)\n");
+        printf("Verification: FAILURE \n");
     }
 
     // Free memory
