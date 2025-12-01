@@ -2,15 +2,12 @@ import subprocess
 import re
 import sys
 
-# Ρυθμίσεις Πειράματος
 # Πλήθος στοιχείων ανά πίνακα (Ν)
 SIZES = [1000000, 10000000, 50000000] 
-# Πόσες φορές θα τρέξει το κάθε πείραμα για να βγει ο μέσος όρος
 RUNS = 4
 EXECUTABLE = "./array_stats"
 
 def compile_code():
-    """Εκτελεί το make για μεταγλώττιση του κώδικα."""
     print("--- Compiling Code ---")
     try:
         subprocess.run(["make"], check=True)
@@ -20,10 +17,6 @@ def compile_code():
         sys.exit(1)
 
 def parse_time(output, label):
-    """
-    Ψάχνει στο output του προγράμματος C για τον χρόνο.
-    Χρησιμοποιεί Regular Expressions για να βρει την τιμή μετά το label.
-    """
     # Regex για εντοπισμό δεκαδικού αριθμού μετά το label
     regex = rf"{label}:\s+([0-9\.]+)"
     match = re.search(regex, output)
@@ -42,7 +35,6 @@ def run_experiments():
         total_serial = 0.0
         total_parallel = 0.0
         
-        # Εκτέλεση RUNS φορές
         for i in range(RUNS):
             # Κλήση του προγράμματος C: ./array_stats <N>
             result = subprocess.run([EXECUTABLE, str(n)], capture_output=True, text=True)
@@ -67,7 +59,7 @@ def run_experiments():
         avg_serial = total_serial / RUNS
         avg_parallel = total_parallel / RUNS
         
-        # Υπολογισμός Speedup (Επιτάχυνση = T_serial / T_parallel)
+        # Υπολογισμός Speedup 
         speedup = avg_serial / avg_parallel if avg_parallel > 0 else 0
 
         # Εκτύπωση αποτελεσμάτων για το συγκεκριμένο N

@@ -10,11 +10,9 @@ struct array_stats_s {
     long long int info_array_3;
 } array_stats;
 
-// Global μεταβλητές για πρόσβαση από τα νήματα
 int **arrays;
-int N; // Μέγεθος κάθε πίνακα
+int N; // Μέγεθος πίνακα
 
-// Συνάρτηση για μέτρηση χρόνου
 double get_time() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -34,7 +32,6 @@ void serial_analysis(struct array_stats_s *stats) {
     for (int i = 0; i < N; i++) if (arrays[3][i] != 0) stats->info_array_3++;
 }
 
-// Συνάρτηση που εκτελεί κάθε νήμα
 void *thread_func(void *arg) {
     int thread_id = *(int *)arg;
 
@@ -63,7 +60,7 @@ int main(int argc, char *argv[]) {
     int num_threads = 4;
     double start, end;
 
-    // --- INITIALIZATION ---
+    // Αρχικοποίηση
     start = get_time();
     
     // Δέσμευση μνήμης για τους 4 πίνακες
@@ -76,7 +73,6 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    // Αρχικοποίηση δομής
     array_stats.info_array_0 = 0;
     array_stats.info_array_1 = 0;
     array_stats.info_array_2 = 0;
@@ -85,14 +81,14 @@ int main(int argc, char *argv[]) {
     end = get_time();
     printf("Initialization Time: %.6f seconds\n", end - start);
 
-    // --- SERIAL EXECUTION ---
+    // Σειριακή εκτέλεση
     struct array_stats_s serial_stats;
     start = get_time();
     serial_analysis(&serial_stats);
     end = get_time();
     printf("Serial Execution Time: %.6f seconds\n", end - start);
 
-    // --- PARALLEL EXECUTION ---
+    // Παράλληλη εκτέλεση
     pthread_t threads[num_threads];
     int thread_ids[num_threads];
 
@@ -113,7 +109,7 @@ int main(int argc, char *argv[]) {
     end = get_time();
     printf("Parallel Execution Time: %.6f seconds\n", end - start);
 
-    // --- VERIFICATION ---
+    // Έλεγχος
     if (array_stats.info_array_0 == serial_stats.info_array_0 &&
         array_stats.info_array_1 == serial_stats.info_array_1 &&
         array_stats.info_array_2 == serial_stats.info_array_2 &&
@@ -123,7 +119,7 @@ int main(int argc, char *argv[]) {
         printf("Verification: FAILURE \n");
     }
 
-    // Free memory
+    // Αποδεσμεύουμε μνήμν
     for (int i = 0; i < 4; i++) free(arrays[i]);
     free(arrays);
 
